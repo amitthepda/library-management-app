@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(to right, #4e73df, #1cc88a);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+        }
+
+        .card {
+            border-radius: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: white;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">📚 Amit Library</a>
+        <div>
+            <a href="/" class="btn btn-outline-light btn-sm me-2">Home</a>
+            <a href="/add" class="btn btn-success btn-sm">Add Book</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    © 2026 Library Management System | Developed by Amit Verma
+</footer>
+
+</body>
+</html>
