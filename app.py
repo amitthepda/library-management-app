@@ -1,47 +1,25 @@
 from flask import Flask, render_template, request, redirect
-import os
-import psycopg2
-from urllib.parse import urlparse
+import sqlite3
+
 app = Flask(__name__)
-def get_db_connection():
-    database_url = os.environ.get('DATABASE_URL')
-    result = urlparse(database_url)
-    conn = psycopg2.connect(
-        dbname=result.path[1:],
-        user=result.username,
-        password=result.password,
-        host=result.hostname,
-        port=result.port
-    )
-    return conn
-conn = get_db_connection()
-cur = conn.cursor()
-cur.execute('''
-CREATE TABLE IF NOT EXISTS books (
-    id SERIAL PRIMARY KEY,
-    title TEXT NOT NULL,
-    author TEXT NOT NULL
-)
-''')
-conn.commit()
-cur.close()
-conn.close()
 
-
+def init_db():
+    conn = sqlite3.connect('library.db')
+    conn.execute('''CREATE TABLE IF NOT EXISTS books
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  title TEXT,
+                  author TEXT,
+                  year TEXT)''')
+    conn.close()
 
 init_db()
 
 @app.route('/')
 def index():
-   conn = get_db_connection()
-   cur = conn.cursor()
-
+    conn = sqlite3.connect('library.db')
     books = conn.execute("SELECT * FROM books").fetchall()
     conn.close()
     return render_template('index.html', books=books)
-    cur.close()
-    conn.close()
-
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_book():
@@ -50,21 +28,18 @@ def add_book():
         author = request.form['author']
         year = request.form['year']
 
-         conn = get_db_connection()
-         cur = conn.cursor()
+        conn = sqlite3.connect('library.db')
         conn.execute("INSERT INTO books (title, author, year) VALUES (?, ?, ?)",
                      (title, author, year))
-         cur.close()
-         conn.close()
-
+        conn.commit()
+        conn.close()
         return redirect('/')
 
     return render_template('add_book.html')
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_book(id):
-    conn = get_db_connection()
-    cur = conn.cursor()
+    conn = sqlite3.connect('library.db')
 
     if request.method == 'POST':
         title = request.form['title']
@@ -73,8 +48,8 @@ def edit_book(id):
 
         conn.execute("UPDATE books SET title=?, author=?, year=? WHERE id=?",
                      (title, author, year, id))
-         cur.close()
-         conn.close()
+        conn.commit()
+        conn.close()
         return redirect('/')
 
     book = conn.execute("SELECT * FROM books WHERE id=?", (id,)).fetchone()
@@ -83,10 +58,9 @@ def edit_book(id):
 
 @app.route('/delete/<int:id>')
 def delete_book(id):
-    conn = get_db_connection()
-    cur = conn.cursor()
+    conn = sqlite3.connect('library.db')
     conn.execute("DELETE FROM books WHERE id=?", (id,))
-    cur.close()
+    conn.commit()
     conn.close()
     return redirect('/')
 
