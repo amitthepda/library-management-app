@@ -38,12 +38,12 @@ def add_book():
         author = request.form['author']
         year = request.form['year']
 
-       conn = get_db_connection()
+        conn = get_db_connection()
         conn.execute("INSERT INTO books (title, author, year) VALUES (?, ?, ?)",
                      (title, author, year))
         conn.commit()
         conn.close()
-        return redirect('/')s
+        return redirect('/')
 
     return render_template('add_book.html')
 
@@ -61,9 +61,9 @@ def edit_book(id):
         conn.close()
         return redirect('/')
 
-    book = conn.execute("SELECT * FROM books WHERE id=?", (id,)).fetchone()
-    conn.close()
-    return render_template('edit_book.html', book=book)
+        book = conn.execute("SELECT * FROM books WHERE id=?", (id,)).fetchone()
+        conn.close()
+        return render_template('edit_book.html', book=book)
 
 @app.route('/delete/<int:id>')
 def delete_book(id):
