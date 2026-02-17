@@ -1,0 +1,23 @@
+<form method="POST">
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="mb-3">
+        <label>Title</label>
+        <input type="text" name="title" class="form-control" value="{{ book['title'] }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Author</label>
+        <input type="text" name="author" class="form-control" value="{{ book['author'] }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Year</label>
+        <input type="text" name="year" class="form-control" value="{{ book['year'] }}">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Book</button>
+
+</form>
+{% endblock %}

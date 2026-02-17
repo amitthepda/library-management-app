@@ -1,28 +1,39 @@
 from flask import Flask, render_template, request, redirect
+
 import os
 import sqlite3
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "library.db")
 
+import sqlite3
+
 def get_db_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = sqlite3.connect('library.db')
+    conn.row_factory = sqlite3.Row   # ✅ allows dict-like access
     return conn
 
 
 app = Flask(__name__)
 
-def init_db():
+def create_table():
     conn = get_db_connection()
-    conn.execute('''CREATE TABLE IF NOT EXISTS books
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  title TEXT,
-                  author TEXT,
-                  year TEXT)''')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS books (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            author TEXT NOT NULL,
+            year TEXT
+        )
+    ''')
+    print("Table created successfully!")
+
+    conn.commit()
     conn.close()
 
-init_db()
+
 
 @app.route('/')
 def index():
@@ -45,25 +56,37 @@ def add_book():
         conn.close()
         return redirect('/')
 
-    return render_template('add_book.html')
+    return render_template('book.html')
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_book(id):
     conn = get_db_connection()
-    if request.method == 'POST':
-        title = request.form['title']
-        author = request.form['author']
-        year = request.form['year']
+    cursor = conn.cursor()
 
-        conn.execute("UPDATE books SET title=?, author=?, year=? WHERE id=?",
-                     (title, author, year, id))
+    if request.method == 'POST':
+        title = request.form.get('title')
+        author = request.form.get('author')
+        year = request.form.get('year')
+
+        cursor.execute(
+            "UPDATE books SET title=?, author=?, year=? WHERE id=?",
+            (title, author, year, id)
+        )
+
         conn.commit()
         conn.close()
+
         return redirect('/')
 
-        book = conn.execute("SELECT * FROM books WHERE id=?", (id,)).fetchone()
-        conn.close()
-        return render_template('edit_book.html', book=book)
+    cursor.execute("SELECT * FROM books WHERE id=?", (id,))
+    book = cursor.fetchone()
+
+    print("Book data:", dict(book) if book else None)
+
+    conn.close()
+
+    return render_template('edit.html', book=book)
+
 
 @app.route('/delete/<int:id>')
 def delete_book(id):
