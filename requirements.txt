@@ -1,2 +1,6 @@
 flask
 gunicorn
+flask
+matplotlib
+sqlite3
+reportlab
