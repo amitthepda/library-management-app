@@ -1,5 +1,6 @@
 flask
 gunicorn
-flask
 matplotlib
 reportlab
+pandas
+openpyxl
