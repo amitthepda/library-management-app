@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-center text-white mb-4">Student Wise Report</h2>
+
+<div class="card p-4 shadow">
+
+<table class="table table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>Student</th>
+            <th>Book</th>
+            <th>Issue Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>{{ book['student_name'] }}</td>
+            <td>{{ book['title'] }}</td>
+            <td>{{ book['issue_date'] }}</td>
+            <td>{{ book['return_date'] or 'Not Returned' }}</td>
+            <td>
+                {% if book['status'] == 'Issued' %}
+                    <span class="badge bg-danger">Issued</span>
+                {% else %}
+                    <span class="badge bg-success">Returned</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

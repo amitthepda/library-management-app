@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card p-4 shadow">
+    <h3 class="text-center mb-3">Issue Book</h3>
+
+<form method="POST">
+    <input type="text" name="student" placeholder="Enter Student Name" required>
+    <button type="submit">Issue</button>
+</form>
+</div>
+
+{% endblock %}

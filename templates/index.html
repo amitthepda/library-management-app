@@ -7,6 +7,9 @@
 <form action="/search" method="GET" class="d-flex mb-3">
     <input type="text" name="query" class="form-control me-2" placeholder="Search by title or author">
     <button type="submit" class="btn btn-primary">Search</button>
+    <a href="/issued_pdf" class="btn btn-warning btn-sm">
+    📄 Issued Books PDF
+</a>
 </form>
 
 
@@ -18,21 +21,37 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Author</th>
-                <th>Actions</th>
+                <th>Status</th>
+                <th>Student</th>
+                <th>Issue Date</th>
+                <th>Return Date</th>
+                </th>
             </tr>
         </thead>
         <tbody>
-            {% for book in books %}
-            <tr>
-                <td>{{ book[0] }}</td>
-                <td>{{ book[1] }}</td>
-                <td>{{ book[2] }}</td>
-                <td>
-                    <a href="/edit/{{ book[0] }}" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="/delete/{{ book[0] }}" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
+           {% for book in books %}
+    <tr>
+        <td>{{ book['id'] }}</td>
+        <td>{{ book['title'] }}</td>
+        <td>{{ book['author'] }}</td>
+        <td>{{ book['status'] }}</td>
+        <td>{{ book['student_name'] }}</td>
+        <td>{{ book['issue_date'] }}</td>
+        <td>{{ book['return_date'] }}</td>
+
+        <td>
+            <a href="/edit/{{ book['id'] }}" class="btn btn-warning btn-sm">Edit</a>
+            <a href="/delete/{{ book['id'] }}" class="btn btn-danger btn-sm">Delete</a>
+            
+
+            {% if book['status'] == 'Available' %}
+                <a href="/issue/{{ book['id'] }}" class="btn btn-primary btn-sm">Issue</a>
+            {% else %}
+                <a href="/return/{{ book['id'] }}" class="btn btn-success btn-sm">Return</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
         </tbody>
     </table>
 
